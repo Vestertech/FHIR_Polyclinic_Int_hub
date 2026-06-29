@@ -1,0 +1,96 @@
+# ============================================================
+# HAPI FHIR JPA Server - Custom Configuration
+# Polyclinic FHIR Integration Hub
+# ============================================================
+# This file customizes the HAPI FHIR JPA Server for our
+# Digital Health Architecture showcase project.
+# ============================================================
+
+# ---------- Server Settings ----------
+server:
+  port: 8080
+  servlet:
+    context-path: /
+
+# ---------- FHIR Server Configuration ----------
+hapi:
+  fhir:
+    # ----- OpenAPI / Swagger Documentation -----
+    # Enables interactive API documentation at /fhir/swagger-ui/
+    # This is what we used to document all our FHIR endpoints
+    openapi_enabled: true
+    openapi_version: 3.0.1
+    
+    # Explicitly include these FHIR resource types in the API documentation
+    # We built workflows around these specific resources
+    openapi_include_resource_types:
+      - Patient          # Patient registration with OHIP extension
+      - Practitioner     # Dr. Chen and Dr. Jones
+      - ServiceRequest   # Referrals and lab orders
+      - Observation      # Lab results
+      - DiagnosticReport # Complete lab reports
+      - Organization     # Polyclinic organization
+      - Encounter        # Patient visits
+      - MedicationRequest # Prescriptions
+      - Condition        # Diagnoses/conditions
+      - AllergyIntolerance # Allergies
+      - Immunization     # Vaccination records
+      - Procedure        # Medical procedures
+
+    # ----- Versioning Support -----
+    # Enables optimistic locking for updates
+    # This is what makes our updates safe (no lost updates)
+    etag_support_enabled: true
+
+    # ----- Search Caching -----
+    # How long to cache search results (milliseconds)
+    # 60000 = 1 minute - good for development
+    reuse_cached_search_results_millis: 60000
+
+    # ----- Implementation Description -----
+    # This appears in the CapabilityStatement
+    implementation_description: "Polyclinic FHIR Integration Hub - Digital Health Architecture Showcase"
+
+    # ----- Server Name -----
+    # Appears in the web UI and CapabilityStatement
+    server_name: "Polyclinic FHIR Server"
+
+    # ----- Default Encoding -----
+    default_encoding: json
+
+    # ----- Pretty Print -----
+    # Makes JSON responses readable in browser
+    pretty_print_response: true
+
+    # ----- Tester (Web UI) Configuration -----
+    tester:
+      id: home
+      name: "Polyclinic FHIR Tester"
+      server_address: "http://localhost:8080/fhir"
+      refuse_to_fetch_third_party_urls: false
+      fhir_version: R4
+
+# ---------- Database Configuration ----------
+spring:
+  # Use H2 in-memory database for development
+  # This is the default that comes with the starter
+  datasource:
+    url: 'jdbc:h2:mem:hapi'
+    username: sa
+    password: ''
+    driverClassName: org.h2.Driver
+  
+  jpa:
+    properties:
+      hibernate.dialect: ca.uhn.fhir.jpa.model.dialect.HapiFhirH2Dialect
+      hibernate.search.enabled: false
+
+# ---------- Logging ----------
+# Set log level to see what's happening
+logging:
+  level:
+    ca.uhn.fhir: INFO
+    org.springframework: INFO
+    org.hibernate: WARN
+    # Uncomment for debugging:
+    # ca.uhn.fhir.jpa: DEBUG
