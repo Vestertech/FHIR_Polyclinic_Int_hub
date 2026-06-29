@@ -24,7 +24,7 @@ This project deploys a **FHIR R4 server** using the HAPI FHIR JPA Starter [citat
 ```bash
 # Clone this repository
 git clone https://github.com/Vestertech/FHIR_Polyclinic_Int_hub.git
-cd hapi-fhir-polyclinic-hub
+cd FHIR_Polyclinic_Int_hub
 
 # Start the server
 docker-compose up -d
